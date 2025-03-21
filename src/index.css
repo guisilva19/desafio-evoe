@@ -1,5 +1,45 @@
 @import "tailwindcss";
 
+@theme {
+  --font-inconsolata: "Inconsolata";
+}
 body {
   font-family: "Inconsolata";
+}
+
+.custom-button {
+  background: #131414;
+  color: white;
+  width: 160px;
+  height: 48px;
+  border-radius: 10px;
+  border: 2px solid #131414;
+  box-shadow: 0px 1px 3px #00000029;
+  transition: background-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.custom-button:hover {
+  background-color: #ffff;
+  box-shadow: 0px 1px 3px #00000029;
+  color: black;
+}
+
+.custom-input {
+  background: #ffffff;
+  border-radius: 5px;
+  border: 0.5px solid #a0a1a1;
+  box-shadow: inset 0px 1px 3px #00000029;
+  opacity: 1;
+  padding-left: 10px;
+  height: 40px;
+  width: 100%;
+  transition: border 0.2s, box-shadow 0.2s;
+  font-family: "Inconsolata";
+}
+
+.custom-input:focus {
+  border: 0.5px solid #131414; /* Muda a borda quando o input está em foco */
+  box-shadow: inset 0px 1px 3px #00000029, 0px 0px 5px rgba(0, 0, 0, 0.2); /* Adiciona um leve brilho quando em foco */
 }
