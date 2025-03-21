@@ -1,7 +1,9 @@
 function App() {
   return (
     <>
-      <main></main>
+      <main className="">
+        <p>TESTE</p>
+      </main>
     </>
   );
 }
