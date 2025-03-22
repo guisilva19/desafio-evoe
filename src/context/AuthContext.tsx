@@ -16,6 +16,8 @@ interface AuthContextType {
     isEmail?: boolean,
     isTelefone?: boolean
   ) => Promise<ResponseData>;
+  deleteSupporters: (ids: string[]) => Promise<boolean>;
+  updateSupporter: (id: string) => Promise<boolean>;
 }
 
 export const AuthContext = createContext<AuthContextType>(
@@ -111,7 +113,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return response.data;
     } catch (error) {
       console.error("Erro ao obter apoiadores:", error);
-      throw error; // Re-throw the error to be handled elsewhere
+      throw error;
+    }
+  };
+
+  const updateSupporter = async (id: string) => {
+    return true;
+  };
+
+  const deleteSupporters = async (ids: string[]) => {
+    try {
+      const deletePromises = ids.map((id) =>
+        axios.delete(`${apiUrl}/supporters/${id}`, {
+          headers: {
+            Authorization: `Bearer ${cookies.access_token}`,
+          },
+        })
+      );
+
+      await Promise.all(deletePromises);
+
+      return true;
+    } catch (error) {
+      console.error("Erro ao excluir apoiadores:", error);
+
+      return false;
     }
   };
 
@@ -122,6 +148,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         getSupporters,
+        updateSupporter,
+        deleteSupporters,
         access_token: cookies.access_token,
       }}
     >

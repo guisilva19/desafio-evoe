@@ -1,13 +1,36 @@
+import { useContext } from "react";
 import close from "../assets/svg/close.svg";
+import { AuthContext } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
-function DeletarUsuario({
+function DeleteSupporter({
   selectedRows,
   closeModal,
+  closeModalWithUpdate,
 }: {
   selectedRows: string[];
   closeModal: () => void;
+  closeModalWithUpdate: () => void;
 }) {
-  const handleDelete = () => {};
+  const { deleteSupporters } = useContext(AuthContext);
+
+  const handleDelete = async () => {
+    const response = await deleteSupporters(selectedRows);
+    if (response) {
+      toast.success(
+        selectedRows.length === 1
+          ? "Apoiador excluído com sucesso!"
+          : "Apoiadores excluídos com sucesso!"
+      );
+    } else {
+      toast.error(
+        selectedRows.length === 1
+          ? "Falha ao excluir o apoiador."
+          : "Falha ao excluir os apoiadores."
+      );
+    }
+    closeModalWithUpdate();
+  };
 
   return (
     <>
@@ -51,4 +74,4 @@ function DeletarUsuario({
   );
 }
 
-export default DeletarUsuario;
+export default DeleteSupporter;

@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Supporter } from "../interfaces";
 import close from "../assets/svg/close.svg";
 
-function EditarUsuario({
+function EditSupporter({
   closeModal,
   editingUser,
   setEditingUser,
@@ -11,6 +11,10 @@ function EditarUsuario({
   editingUser: Supporter;
   setEditingUser: Dispatch<SetStateAction<Supporter | null>>;
 }) {
+  const handleSave = () => {
+    closeModal();
+  };
+
   return (
     <>
       <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center">
@@ -27,27 +31,42 @@ function EditarUsuario({
             </button>
           </div>
           <div className="space-y-4">
-            {Object.entries(editingUser).map(
-              ([key, value]) =>
-                key !== "id" && (
-                  <div key={key}>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {key.charAt(0).toUpperCase() + key.slice(1)}
-                    </label>
-                    <input
-                      type="text"
-                      value={value}
-                      onChange={(e) => {
+            {Object.entries(editingUser).map(([key, value]) => {
+              if (key === "id") return null;
+
+              const isEmailField = key === "email";
+
+              return (
+                <div key={key}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </label>
+                  <input
+                    type="text"
+                    value={value}
+                    onChange={(e) => {
+                      if (!isEmailField) {
                         setEditingUser({
                           ...editingUser,
                           [key]: e.target.value,
                         });
-                      }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-                    />
-                  </div>
-                )
-            )}
+                      }
+                    }}
+                    disabled={isEmailField}
+                    className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black ${
+                      isEmailField
+                        ? "bg-gray-100 border-gray-400"
+                        : "border-gray-300"
+                    }`}
+                  />
+                  {isEmailField && (
+                    <p className="text-sm text-gray-500 mt-1">
+                      Este campo não pode ser alterado
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
           <div className="mt-6 flex justify-end gap-3">
             <button
@@ -57,7 +76,7 @@ function EditarUsuario({
               Cancelar
             </button>
             <button
-              onClick={closeModal}
+              onClick={handleSave} // Chamar handleSave ao clicar
               className="custom-button px-4 cursor-pointer"
             >
               Salvar Alterações
@@ -69,4 +88,4 @@ function EditarUsuario({
   );
 }
 
-export default EditarUsuario;
+export default EditSupporter;

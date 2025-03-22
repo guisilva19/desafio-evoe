@@ -1,30 +1,21 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Column, ResponseData, Supporter } from "../interfaces";
+import { SyncLoader } from "react-spinners";
+
+import { AuthContext } from "../context/AuthContext";
+
+import Pagination from "./Pagination";
+import Filter from "./Filter";
 
 import pencil from "../assets/svg/pencil.svg";
 import link from "../assets/svg/link.svg";
-import { AuthContext } from "../context/AuthContext";
-import Pagination from "./Pagination";
-import Filter from "./Filter";
-import { SyncLoader } from "react-spinners";
+import trash from "../assets/svg/trash-white.svg";
+import EditSupporter from "./EditSupporter";
+import DeleteSupporter from "./DeleteSupporter";
 
-function Table({
-  selectedRows,
-  setSelectedRows,
-  handleEdit,
-}: {
-  selectedRows: string[];
-  setSelectedRows: Dispatch<SetStateAction<string[]>>;
-  handleEdit: (supporter: Supporter) => void;
-}) {
+function Table() {
   const [data, setData] = useState<ResponseData>({} as ResponseData);
 
   const { getSupporters } = useContext(AuthContext);
@@ -33,8 +24,15 @@ function Table({
 
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [showColumnsDropdown, setShowColumnsDropdown] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingSupporter, setEditingSupporter] = useState<Supporter | null>(
+    null
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   const [search, setSearch] = useState("");
 
@@ -45,10 +43,6 @@ function Table({
   useEffect(() => {
     get();
   }, [currentPage]);
-
-  const handleSearch = async () => {
-    await get();
-  };
 
   const get = async () => {
     try {
@@ -97,6 +91,11 @@ function Table({
     { key: "link", label: "Link", visible: true },
   ]);
 
+  const handleEdit = (supporter: Supporter) => {
+    setEditingSupporter(supporter);
+    setShowEditModal(true);
+  };
+
   return (
     <>
       {/* FILTRO PARA TABELA  */}
@@ -109,7 +108,7 @@ function Table({
         setIsNome={setIsNome}
         setIsEmail={setIsEmail}
         setIsTelefone={setIsTelefone}
-        handleSearch={handleSearch}
+        handleSearch={get}
       />
       {isLoading ? (
         <div className="w-full flex justify-center items-center h-40">
@@ -301,6 +300,45 @@ function Table({
             </div>
           </div>
         </>
+      )}
+
+      {/* MODAL EDITAR APOIADOR */}
+      {showEditModal && editingSupporter && (
+        <EditSupporter
+          closeModal={() => setShowEditModal(false)}
+          editingUser={editingSupporter}
+          setEditingUser={setEditingSupporter}
+        />
+      )}
+
+      {/* MODAL PARA CONTAGEM DE APOIADORES */}
+      {selectedRows.length > 0 && !showDeleteModal && !showEditModal && (
+        <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 flex items-center gap-4">
+          <span className="text-sm text-gray-600">
+            {selectedRows.length}{" "}
+            {selectedRows.length === 1 ? "apoiador" : "apoiadores"} selecionado
+          </span>
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md flex items-center gap-2"
+          >
+            <img src={trash} alt="Trash" className="w-4 h-4 text-white" />
+            Remover
+          </button>
+        </div>
+      )}
+
+      {/* MODAL CONFIRMAR DELEÇÃO DOS APOIADORES */}
+      {showDeleteModal && (
+        <DeleteSupporter
+          closeModal={() => setShowDeleteModal(false)}
+          selectedRows={selectedRows}
+          closeModalWithUpdate={async () => {
+            await get();
+            setSelectedRows([]);
+            setShowDeleteModal(false);
+          }}
+        />
       )}
     </>
   );
