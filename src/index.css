@@ -8,12 +8,9 @@ body {
   overflow-x: hidden;
 }
 
-
 .custom-button {
   background: #131414;
   color: white;
-  width: 160px;
-  height: 48px;
   border-radius: 10px;
   border: 2px solid #131414;
   box-shadow: 0px 1px 3px #00000029;
@@ -44,4 +41,30 @@ body {
 .custom-input:focus {
   border: 0.5px solid #131414; /* Muda a borda quando o input está em foco */
   box-shadow: inset 0px 1px 3px #00000029, 0px 0px 5px rgba(0, 0, 0, 0.2); /* Adiciona um leve brilho quando em foco */
+}
+input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid black;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: black;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='24px' height='24px'%3E%3Cpath d='M9 16.2l-4.2-4.2-1.4 1.4 5.6 5.6 12-12-1.4-1.4z'/%3E%3C/svg%3E");
+  background-size: contain;
 }

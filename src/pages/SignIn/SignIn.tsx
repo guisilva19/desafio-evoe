@@ -104,7 +104,7 @@ function SignIn() {
                     </div>
                   </div>
                   <div className="flex justify-center">
-                    <button type="submit" className="custom-button mx-auto">
+                    <button type="submit" className="custom-button mx-auto w-40 h-12">
                       Entrar
                     </button>
                   </div>

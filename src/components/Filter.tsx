@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronsDown, ChevronsUp } from "lucide-react";
 
 import { FilterOption } from "../interfaces";
 
@@ -23,7 +23,7 @@ function Filter() {
     <>
       <div className="bg-white rounded-lg shadow-sm mb-6">
         <div className="p-4">
-          <div className="flex gap-4 mb-4">
+          <div className="flex gap-4">
             <div className="flex-1">
               <div className="relative">
                 <input
@@ -47,18 +47,16 @@ function Filter() {
             </button>
             <button
               onClick={() => setShowMoreFilters(!showMoreFilters)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex items-center gap-2"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex items-center justify-between gap-2 font-bold w-40"
             >
               More filters
               {showMoreFilters ? (
-                <ChevronUp className="w-4 h-4" />
+                <ChevronsUp className="w-4 h-4" />
               ) : (
-                <ChevronDown className="w-4 h-4" />
+                <ChevronsDown className="w-4 h-4" />
               )}
             </button>
-            <button className="px-6 py-2 bg-black text-white rounded-lg text-sm hover:bg-gray-800">
-              Search
-            </button>
+            <button className="custom-button w-40 text-sm">Search</button>
           </div>
           {showMoreFilters && (
             <div className="grid grid-cols-3 gap-4 mt-4">

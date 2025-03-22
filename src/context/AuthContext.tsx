@@ -4,7 +4,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 interface User {
+  nome: string;
   email: string;
+  link: string;
+  telefone: string;
 }
 
 interface AuthContextType {
@@ -70,11 +73,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await axios.post(
-      "http://localhost:5000/logout",
-      {},
-      { withCredentials: true }
-    );
     removeCookie("access_token");
     setUser(null);
   };
