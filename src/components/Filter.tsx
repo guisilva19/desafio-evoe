@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { ChevronsDown, ChevronsUp } from "lucide-react";
 
 import { FilterOption } from "../interfaces";
-
-import search from "../assets/svg/search.svg";
-import calendar from "../assets/svg/calendar.svg";
+import calendarIcon from "../assets/svg/calendar.svg";
+import searchIcon from "../assets/svg/search.svg";
 
 const filterOptions: FilterOption[] = [
   { id: "1", label: "Name" },
@@ -12,12 +11,58 @@ const filterOptions: FilterOption[] = [
   { id: "3", label: "Telefone" },
 ];
 
-function Filter() {
+function Filter({
+  search,
+  setSearch,
+  isNome,
+  isEmail,
+  isTelefone,
+  setIsNome,
+  setIsEmail,
+  setIsTelefone,
+  handleSearch,
+}: {
+  search: string;
+  setSearch: Dispatch<SetStateAction<string>>;
+
+  isNome: boolean;
+  isEmail: boolean;
+  isTelefone: boolean;
+  setIsNome: Dispatch<SetStateAction<boolean>>;
+  setIsEmail: Dispatch<SetStateAction<boolean>>;
+  setIsTelefone: Dispatch<SetStateAction<boolean>>;
+
+  handleSearch: () => void;
+}) {
   const [showMoreFilters, setShowMoreFilters] = useState(false);
-  const [selectedFilters, setSelectedFilters] = useState<Set<string>>(
-    new Set()
-  );
-  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleFilterChange = (filterId: string) => {
+    switch (filterId) {
+      case "1":
+        setIsNome(!isNome);
+        if (!isNome) {
+          setIsEmail(false);
+          setIsTelefone(false);
+        }
+        break;
+      case "2":
+        setIsEmail(!isEmail);
+        if (!isEmail) {
+          setIsNome(false);
+          setIsTelefone(false);
+        }
+        break;
+      case "3":
+        setIsTelefone(!isTelefone);
+        if (!isTelefone) {
+          setIsNome(false);
+          setIsEmail(false);
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <>
@@ -29,13 +74,13 @@ function Filter() {
                 <input
                   type="text"
                   placeholder="Buscar..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
                 />
                 <button className="absolute right-3 top-1/2 -translate-y-1/2">
                   <img
-                    src={search}
+                    src={searchIcon}
                     alt="Buscar"
                     className="w-4 h-4 text-gray-400"
                   />
@@ -43,7 +88,7 @@ function Filter() {
               </div>
             </div>
             <button className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex items-center gap-2 cursor-pointer">
-              <img src={calendar} alt="Calendário" className="w-4 h-4" />
+              <img src={calendarIcon} alt="Calendário" className="w-4 h-4" />
             </button>
             <button
               onClick={() => setShowMoreFilters(!showMoreFilters)}
@@ -56,7 +101,12 @@ function Filter() {
                 <ChevronsDown className="w-4 h-4" />
               )}
             </button>
-            <button className="custom-button w-40 text-sm">Buscar</button>
+            <button
+              className="custom-button w-40 text-sm"
+              onClick={handleSearch}
+            >
+              Buscar
+            </button>
           </div>
           {showMoreFilters && (
             <div className="grid grid-cols-3 gap-4 mt-4">
@@ -67,16 +117,12 @@ function Filter() {
                 >
                   <input
                     type="checkbox"
-                    checked={selectedFilters.has(filter.id)}
-                    onChange={() => {
-                      const newFilters = new Set(selectedFilters);
-                      if (newFilters.has(filter.id)) {
-                        newFilters.delete(filter.id);
-                      } else {
-                        newFilters.add(filter.id);
-                      }
-                      setSelectedFilters(newFilters);
-                    }}
+                    checked={
+                      (filter.id === "1" && isNome) ||
+                      (filter.id === "2" && isEmail) ||
+                      (filter.id === "3" && isTelefone)
+                    }
+                    onChange={() => handleFilterChange(filter.id)}
                     className="rounded border-gray-300"
                   />
                   {filter.label}
@@ -89,4 +135,5 @@ function Filter() {
     </>
   );
 }
+
 export default Filter;

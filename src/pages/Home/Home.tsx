@@ -7,7 +7,6 @@ import trash from "../../assets/svg/trash-white.svg";
 import EditUser from "../../components/EditUser";
 import DeleteUser from "../../components/DeleteUser";
 import Table from "../../components/Table";
-import Filter from "../../components/Filter";
 
 function Home() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -25,8 +24,6 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-10">
-      {/* FILTRO PARA TABELA  */}
-      <Filter />
 
       {/* TABELA DE APOIADORES*/}
       <Table

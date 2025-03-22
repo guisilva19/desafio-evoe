@@ -7,6 +7,9 @@ body {
   font-family: "Inconsolata";
   overflow-x: hidden;
 }
+button {
+  cursor: pointer;
+}
 
 .custom-button {
   background: #131414;

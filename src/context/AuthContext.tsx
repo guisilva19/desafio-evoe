@@ -11,9 +11,10 @@ interface AuthContextType {
   logout: () => Promise<void>;
   getSupporters: (
     page: number,
-    nome?: string,
-    email?: string,
-    telefone?: string
+    search?: string,
+    isNome?: boolean,
+    isEmail?: boolean,
+    isTelefone?: boolean
   ) => Promise<ResponseData>;
 }
 
@@ -79,20 +80,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getSupporters = async (
     page: number,
-    nome: string = "",
-    email: string = "",
-    telefone: string = ""
-  ) => {
-    const response = await axios.get(
-      `${apiUrl}/supporters?page=${page}&nome=${nome}&email=${email}&telefone=${telefone}`,
-      {
+    search: string = "",
+    isNome: boolean = false,
+    isEmail: boolean = false,
+    isTelefone: boolean = false
+  ): Promise<ResponseData> => {
+    const queryParams: Record<string, string> = {
+      page: page.toString(),
+    };
+
+    if (isNome) {
+      queryParams["nome"] = search;
+    }
+    if (isEmail) {
+      queryParams["email"] = search;
+    }
+    if (isTelefone) {
+      queryParams["telefone"] = search;
+    }
+
+    const queryString = new URLSearchParams(queryParams).toString();
+
+    try {
+      const response = await axios.get(`${apiUrl}/supporters?${queryString}`, {
         headers: {
           Authorization: `Bearer ${cookies.access_token}`,
         },
-      }
-    );
+      });
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao obter apoiadores:", error);
+      throw error; // Re-throw the error to be handled elsewhere
+    }
   };
 
   return (

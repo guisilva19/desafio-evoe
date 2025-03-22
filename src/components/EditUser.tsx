@@ -52,13 +52,13 @@ function EditarUsuario({
           <div className="mt-6 flex justify-end gap-3">
             <button
               onClick={closeModal}
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-md"
+              className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-md cursor-pointer"
             >
               Cancelar
             </button>
             <button
               onClick={closeModal}
-              className="px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-md"
+              className="custom-button px-4 cursor-pointer"
             >
               Salvar Alterações
             </button>
