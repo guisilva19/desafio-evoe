@@ -61,7 +61,7 @@ function AddSupporter({
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </label>
               <input
-                type="text"
+                type={field === 'telefone' ? "tel" : "text"}
                 {...register(field)}
                 className="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
               />
