@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
 import { Column, ResponseData, Supporter } from "../interfaces";
 import { SyncLoader } from "react-spinners";
@@ -14,6 +14,7 @@ import link from "../assets/svg/link.svg";
 import trash from "../assets/svg/trash-white.svg";
 import EditSupporter from "./EditSupporter";
 import DeleteSupporter from "./DeleteSupporter";
+import AddSupporter from "./AddSupporter";
 
 function Table() {
   const [data, setData] = useState<ResponseData>({} as ResponseData);
@@ -24,8 +25,9 @@ function Table() {
 
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [showColumnsDropdown, setShowColumnsDropdown] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editingSupporter, setEditingSupporter] = useState<Supporter | null>(
     null
   );
@@ -172,6 +174,14 @@ function Table() {
                     </div>
                   )}
                 </div>
+                <div>
+                  <button
+                    onClick={() => setShowAddModal(true)}
+                    className="custom-button h-full px-2"
+                  >
+                    <Plus />
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -302,12 +312,27 @@ function Table() {
         </>
       )}
 
+      {/* MODAL ADICIONAR APOIADOR */}
+      {showAddModal && (
+        <AddSupporter
+          closeModal={() => setShowAddModal(false)}
+          closeModalWithAdd={() => {
+            setShowAddModal(false);
+            get();
+          }}
+        />
+      )}
+
       {/* MODAL EDITAR APOIADOR */}
       {showEditModal && editingSupporter && (
         <EditSupporter
           closeModal={() => setShowEditModal(false)}
-          editingUser={editingSupporter}
-          setEditingUser={setEditingSupporter}
+          editingSupporter={editingSupporter}
+          setEditingSupporter={setEditingSupporter}
+          closeModalWithUpdate={async () => {
+            setShowEditModal(false);
+            await get();
+          }}
         />
       )}
 
@@ -334,9 +359,9 @@ function Table() {
           closeModal={() => setShowDeleteModal(false)}
           selectedRows={selectedRows}
           closeModalWithUpdate={async () => {
-            await get();
-            setSelectedRows([]);
             setShowDeleteModal(false);
+            setSelectedRows([]);
+            await get();
           }}
         />
       )}

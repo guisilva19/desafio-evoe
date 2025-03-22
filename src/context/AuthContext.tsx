@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { useCookies } from "react-cookie";
-import { ResponseData, User } from "../interfaces";
+import { ResponseData, Supporter, User } from "../interfaces";
+
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -16,8 +17,17 @@ interface AuthContextType {
     isEmail?: boolean,
     isTelefone?: boolean
   ) => Promise<ResponseData>;
+  addSupporter: (body: {
+    nome: string;
+    email: string;
+    telefone: string;
+    link: string;
+  }) => Promise<boolean>;
+  updateSupporter: (
+    id: string,
+    { nome, telefone, link }: Supporter
+  ) => Promise<boolean>;
   deleteSupporters: (ids: string[]) => Promise<boolean>;
-  updateSupporter: (id: string) => Promise<boolean>;
 }
 
 export const AuthContext = createContext<AuthContextType>(
@@ -103,22 +113,71 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const queryString = new URLSearchParams(queryParams).toString();
 
-    try {
-      const response = await axios.get(`${apiUrl}/supporters?${queryString}`, {
-        headers: {
-          Authorization: `Bearer ${cookies.access_token}`,
-        },
-      });
+    const response = await axios.get(`${apiUrl}/supporters?${queryString}`, {
+      headers: {
+        Authorization: `Bearer ${cookies.access_token}`,
+      },
+    });
 
-      return response.data;
+    return response.data;
+  };
+
+  const addSupporter = async ({
+    email,
+    link,
+    nome,
+    telefone,
+  }: {
+    nome: string;
+    email: string;
+    telefone: string;
+    link: string;
+  }) => {
+    try {
+      await axios.post(
+        `${apiUrl}/supporters`,
+        {
+          email,
+          nome,
+          telefone,
+          link,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.access_token}`,
+          },
+        }
+      );
+
+      return true;
     } catch (error) {
-      console.error("Erro ao obter apoiadores:", error);
-      throw error;
+      return false;
     }
   };
 
-  const updateSupporter = async (id: string) => {
-    return true;
+  const updateSupporter = async (
+    id: string,
+    { nome, telefone, link }: Supporter
+  ) => {
+    try {
+      await axios.patch(
+        `${apiUrl}/supporters/${id}`,
+        {
+          nome,
+          telefone,
+          link,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.access_token}`,
+          },
+        }
+      );
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   };
 
   const deleteSupporters = async (ids: string[]) => {
@@ -135,8 +194,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return true;
     } catch (error) {
-      console.error("Erro ao excluir apoiadores:", error);
-
       return false;
     }
   };
@@ -148,6 +205,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         getSupporters,
+        addSupporter,
         updateSupporter,
         deleteSupporters,
         access_token: cookies.access_token,

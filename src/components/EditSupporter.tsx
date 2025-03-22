@@ -1,18 +1,37 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Supporter } from "../interfaces";
+
+import { AuthContext } from "../context/AuthContext";
+
 import close from "../assets/svg/close.svg";
+import toast from "react-hot-toast";
 
 function EditSupporter({
   closeModal,
-  editingUser,
-  setEditingUser,
+  closeModalWithUpdate,
+  editingSupporter,
+  setEditingSupporter,
 }: {
   closeModal: () => void;
-  editingUser: Supporter;
-  setEditingUser: Dispatch<SetStateAction<Supporter | null>>;
+  closeModalWithUpdate: () => void;
+  editingSupporter: Supporter;
+  setEditingSupporter: Dispatch<SetStateAction<Supporter | null>>;
 }) {
-  const handleSave = () => {
-    closeModal();
+  const { updateSupporter } = useContext(AuthContext);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      await updateSupporter(editingSupporter.id, editingSupporter);
+      toast.success("Apoiador atualizado com sucesso");
+    } catch (error) {
+      toast.error("Não foi possivel atualizar");
+    } finally {
+      setIsLoading(true);
+    }
+    closeModalWithUpdate();
   };
 
   return (
@@ -31,7 +50,7 @@ function EditSupporter({
             </button>
           </div>
           <div className="space-y-4">
-            {Object.entries(editingUser).map(([key, value]) => {
+            {Object.entries(editingSupporter).map(([key, value]) => {
               if (key === "id") return null;
 
               const isEmailField = key === "email";
@@ -46,8 +65,8 @@ function EditSupporter({
                     value={value}
                     onChange={(e) => {
                       if (!isEmailField) {
-                        setEditingUser({
-                          ...editingUser,
+                        setEditingSupporter({
+                          ...editingSupporter,
                           [key]: e.target.value,
                         });
                       }
@@ -76,7 +95,8 @@ function EditSupporter({
               Cancelar
             </button>
             <button
-              onClick={handleSave} // Chamar handleSave ao clicar
+              disabled={isLoading}
+              onClick={handleSave}
               className="custom-button px-4 cursor-pointer"
             >
               Salvar Alterações

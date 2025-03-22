@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import close from "../assets/svg/close.svg";
 import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
@@ -14,20 +14,25 @@ function DeleteSupporter({
 }) {
   const { deleteSupporters } = useContext(AuthContext);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleDelete = async () => {
-    const response = await deleteSupporters(selectedRows);
-    if (response) {
+    try {
+      setIsLoading(true);
+      await deleteSupporters(selectedRows);
       toast.success(
         selectedRows.length === 1
           ? "Apoiador excluído com sucesso!"
           : "Apoiadores excluídos com sucesso!"
       );
-    } else {
+    } catch (error) {
       toast.error(
         selectedRows.length === 1
           ? "Falha ao excluir o apoiador."
           : "Falha ao excluir os apoiadores."
       );
+    } finally {
+      setIsLoading(false);
     }
     closeModalWithUpdate();
   };
@@ -62,6 +67,7 @@ function DeleteSupporter({
               Cancelar
             </button>
             <button
+              disabled={isLoading}
               onClick={handleDelete}
               className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md"
             >

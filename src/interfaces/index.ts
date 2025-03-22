@@ -32,3 +32,11 @@ export interface ResponseData {
   pageSize: number;
   totalPages: number;
 }
+
+
+export interface SupporterAdd {
+  nome: string;
+  email: string;
+  link: string;
+  telefone: string;
+}
