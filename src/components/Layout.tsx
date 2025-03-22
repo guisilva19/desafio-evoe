@@ -26,11 +26,15 @@ function Layout() {
         </div>
 
         <div className="flex gap-5">
-          <img
-            src={`https://api.dicebear.com/7.x/initials/png?seed=${user?.nome}`}
-            alt="Avatar"
-            className="rounded-full w-10 h-10 cursor-pointer"
-          />
+          {user?.nome ? (
+            <img
+              src={`https://api.dicebear.com/7.x/initials/png?seed=${user.nome}`}
+              alt="Avatar"
+              className="rounded-full w-10 h-10 cursor-pointer"
+            />
+          ) : (
+            <></>
+          )}
           <button
             onClick={logout}
             className="cursor-pointer hover:bg-gray-300 rounded-full w-10 h-10 flex justify-center items-center"
