@@ -75,6 +75,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         expirationDate.setHours(expirationDate.getHours() + 24);
         setCookie("access_token", response.data.access_token, {
           expires: expirationDate,
+          sameSite: "none", 
+          secure: true,
         });
         return true;
       }
