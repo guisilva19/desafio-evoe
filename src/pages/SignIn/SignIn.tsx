@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import logo from "../../assets/logo.png";
-import coracao from "../../assets/coracao.png";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaSignIn } from "../../utils/schemas";
+import logo from "../../assets/logo.png";
+import coracao from "../../assets/coracao.png";
 
 function SignIn() {
   const { login } = useContext(AuthContext);

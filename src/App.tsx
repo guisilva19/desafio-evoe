@@ -12,7 +12,7 @@ function App() {
       <AuthProvider>
         <Router>
         <Toaster position="top-right" />
-          <Routes>
+          <Routes >
             <Route path="/" index element={<SignIn />} />
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />
