@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { User } from "../../interfaces";
+import { Supporter } from "../../interfaces";
 
 import trash from "../../assets/svg/trash-white.svg";
 
@@ -14,10 +14,12 @@ function Home() {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingSupporter, setEditingSupporter] = useState<Supporter | null>(
+    null
+  );
 
-  const handleEdit = (user: User) => {
-    setEditingUser(user);
+  const handleEdit = (supporter: Supporter) => {
+    setEditingSupporter(supporter);
     setShowEditModal(true);
   };
 
@@ -42,11 +44,11 @@ function Home() {
       )}
 
       {/* MODAL EDIT USER */}
-      {showEditModal && editingUser && (
+      {showEditModal && editingSupporter && (
         <EditUser
           closeModal={() => setShowEditModal(false)}
-          editingUser={editingUser}
-          setEditingUser={setEditingUser}
+          editingUser={editingSupporter}
+          setEditingUser={setEditingSupporter}
         />
       )}
 

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { User } from "../interfaces";
+import { Supporter } from "../interfaces";
 import close from "../assets/svg/close.svg";
 
 function EditUser({
@@ -8,8 +8,8 @@ function EditUser({
   setEditingUser,
 }: {
   closeModal: () => void;
-  editingUser: User;
-  setEditingUser: Dispatch<SetStateAction<User | null>>;
+  editingUser: Supporter;
+  setEditingUser: Dispatch<SetStateAction<Supporter | null>>;
 }) {
   return (
     <>
