@@ -4,46 +4,22 @@ import search from "../../assets/svg/search.svg";
 import calendar from "../../assets/svg/calendar.svg";
 import trash from "../../assets/svg/trash-white.svg";
 import pencil from "../../assets/svg/pencil.svg";
-import close from "../../assets/svg/close.svg";
 import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronUp,
 } from "lucide-react";
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  telephone: string;
-  link: string;
-}
-
-interface FilterOption {
-  id: string;
-  label: string;
-}
-
-interface Column {
-  key: keyof User;
-  label: string;
-  visible: boolean;
-}
+import { Column, FilterOption, User } from "../../interfaces";
+import EditUser from "../../components/EditUser";
+import DeleteUser from "../../components/DeleteUser";
 
 const filterOptions: FilterOption[] = [
-  { id: "filter1", label: "Filter name" },
-  { id: "filter2", label: "Filter name" },
-  { id: "filter3", label: "Filter name" },
-  { id: "filter4", label: "Filter name" },
-  { id: "filter5", label: "Filter name" },
-  { id: "filter6", label: "Filter name" },
-  { id: "filter7", label: "Filter name" },
-  { id: "filter8", label: "Filter name" },
-  { id: "filter9", label: "Filter name" },
+  { id: "1", label: "Name" },
+  { id: "2", label: "Email" },
+  { id: "3", label: "Telefone" },
 ];
 
-// Generate more mock data
 const generateMockData = (count: number): User[] => {
   const data: User[] = [];
   const names = ["Guilherme Silva", "Ane Caroline"];
@@ -127,11 +103,6 @@ function Home() {
     setShowEditModal(true);
   };
 
-  const handleDelete = () => {
-    setSelectedRows([]);
-    setShowDeleteModal(false);
-  };
-
   const renderPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
@@ -163,6 +134,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
+      {/* FILTERS OF USERS  */}
       <div className="bg-white rounded-lg shadow-sm mb-6">
         <div className="p-4">
           <div className="flex gap-4 mb-4">
@@ -231,6 +203,7 @@ function Home() {
         </div>
       </div>
 
+      {/* TABLE OF USERS */}
       <div className="bg-white rounded-lg shadow-sm">
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-lg font-medium text-gray-700">Users</h2>
@@ -371,139 +344,57 @@ function Home() {
             </tbody>
           </table>
         </div>
+      </div>
 
-        <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-              disabled={currentPage === 1}
-              className={`p-1 rounded ${
-                currentPage === 1
-                  ? "text-gray-300"
-                  : "hover:bg-gray-100 text-gray-500"
-              }`}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            {renderPageNumbers()}
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-              }
-              disabled={currentPage === totalPages}
-              className={`p-1 rounded ${
-                currentPage === totalPages
-                  ? "text-gray-300"
-                  : "hover:bg-gray-100 text-gray-500"
-              }`}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="text-sm text-gray-600">
-            Showing {startIndex + 1} to {endIndex} of {mockData.length} entries
-          </div>
+      {/* PAGINATION OF USERS*/}
+      <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-center">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            className={`p-1 rounded ${
+              currentPage === 1
+                ? "text-gray-300"
+                : "hover:bg-gray-100 text-gray-500"
+            }`}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          {renderPageNumbers()}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+            }
+            disabled={currentPage === totalPages}
+            className={`p-1 rounded ${
+              currentPage === totalPages
+                ? "text-gray-300"
+                : "hover:bg-gray-100 text-gray-500"
+            }`}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* MODAL CONFIRMATION DELETE USER */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-end justify-end p-4">
-          <div className="bg-white rounded-lg shadow-lg w-96 p-6 mr-4 mb-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">
-                Delete {selectedRows.length === 1 ? "User" : "Users"}
-              </h3>
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="text-gray-400 hover:text-gray-500"
-              >
-                <img src={close} alt="Close" className="w-5 h-5" />
-              </button>
-            </div>
-            <p className="text-sm text-gray-500 mb-4">
-              Are you sure you want to delete{" "}
-              {selectedRows.length === 1
-                ? "this user"
-                : `${selectedRows.length} users`}
-              ? This action cannot be undone.
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-md"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeleteUser
+          closeModal={() => setShowDeleteModal(false)}
+          selectedRows={selectedRows}
+        />
       )}
 
-      {/* Edit User Modal */}
+      {/* MODAL EDIT USER */}
       {showEditModal && editingUser && (
-        <div className="fixed inset-0 bg-black/10 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Edit User</h3>
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="text-gray-400 hover:text-gray-500"
-              >
-                <img src={close} alt="Close" className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              {Object.entries(editingUser).map(
-                ([key, value]) =>
-                  key !== "id" && (
-                    <div key={key}>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                      </label>
-                      <input
-                        type="text"
-                        value={value}
-                        onChange={(e) => {
-                          setEditingUser({
-                            ...editingUser,
-                            [key]: e.target.value,
-                          });
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-                      />
-                    </div>
-                  )
-              )}
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-md"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  // Implement save logic here
-                  setShowEditModal(false);
-                }}
-                className="px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-md"
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
+        <EditUser
+          closeModal={() => setShowEditModal(false)}
+          editingUser={editingUser}
+          setEditingUser={setEditingUser}
+        />
       )}
 
-      {/* Action Modal */}
+      {/* MODAL COUNT USERS FOR DELETE */}
       {selectedRows.length > 0 && !showDeleteModal && !showEditModal && (
         <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 flex items-center gap-4">
           <span className="text-sm text-gray-600">
