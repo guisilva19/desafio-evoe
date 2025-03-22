@@ -28,7 +28,7 @@ function Filter() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Buscar..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
@@ -36,27 +36,27 @@ function Filter() {
                 <button className="absolute right-3 top-1/2 -translate-y-1/2">
                   <img
                     src={search}
-                    alt="Search"
+                    alt="Buscar"
                     className="w-4 h-4 text-gray-400"
                   />
                 </button>
               </div>
             </div>
             <button className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex items-center gap-2 cursor-pointer">
-              <img src={calendar} alt="Calendar" className="w-4 h-4" />
+              <img src={calendar} alt="Calendário" className="w-4 h-4" />
             </button>
             <button
               onClick={() => setShowMoreFilters(!showMoreFilters)}
               className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex items-center justify-between gap-2 font-bold w-40"
             >
-              More filters
+              Mais filtros
               {showMoreFilters ? (
                 <ChevronsUp className="w-4 h-4" />
               ) : (
                 <ChevronsDown className="w-4 h-4" />
               )}
             </button>
-            <button className="custom-button w-40 text-sm">Search</button>
+            <button className="custom-button w-40 text-sm">Buscar</button>
           </div>
           {showMoreFilters && (
             <div className="grid grid-cols-3 gap-4 mt-4">

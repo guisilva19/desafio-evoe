@@ -66,7 +66,7 @@ function Table({
 
   const [columns, setColumns] = useState<Column[]>([
     { key: "nome", label: "Nome", visible: true },
-    { key: "email", label: "Email", visible: true },
+    { key: "email", label: "E-mail", visible: true },
     { key: "telefone", label: "Telefone", visible: true },
     { key: "link", label: "Link", visible: true },
   ]);
@@ -75,14 +75,14 @@ function Table({
     <>
       <div className="bg-white rounded-lg shadow-sm">
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-lg font-medium text-gray-700">Users</h2>
+          <h2 className="text-lg font-medium text-gray-700">Usuários</h2>
           <div className="flex gap-2">
             <div className="relative">
               <button
                 onClick={() => setShowColumnsDropdown(!showColumnsDropdown)}
                 className="px-3 py-1.5 border border-gray-300 rounded text-sm flex items-center gap-2 text-gray-700 hover:bg-gray-50"
               >
-                All Columns
+                Todas as Colunas
                 <ChevronDown className="w-4 h-4" />
               </button>
               {showColumnsDropdown && (
@@ -113,17 +113,17 @@ function Table({
                 className="px-3 py-1.5 border border-gray-300 rounded text-sm flex items-center gap-2 text-gray-700 hover:bg-gray-50"
                 onClick={() => setShowExportDropdown(!showExportDropdown)}
               >
-                Export
+                Exportar
                 <ChevronDown className="w-4 h-4" />
               </button>
               {showExportDropdown && (
                 <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
                   <div className="py-1">
                     <div className="px-3 py-2 text-xs font-medium text-gray-500">
-                      Export selected PDF
+                      Exportar selecionados para PDF
                     </div>
                     <div className="px-3 py-2 text-xs text-gray-500">
-                      Export all selected Excel
+                      Exportar todos para Excel
                     </div>
                   </div>
                 </div>
@@ -155,7 +155,7 @@ function Table({
                     </th>
                   ))}
                 <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">
-                  Actions
+                  Ações
                 </th>
               </tr>
             </thead>
@@ -205,7 +205,7 @@ function Table({
                       onClick={() => handleEdit(item)}
                       className="text-gray-600 hover:text-gray-900"
                     >
-                      <img src={pencil} alt="Pencil" className="w-4 h-4" />
+                      <img src={pencil} alt="Editar" className="w-4 h-4" />
                     </button>
                   </td>
                 </tr>
@@ -215,11 +215,14 @@ function Table({
         </div>
       </div>
 
-      {/* PAGINATION OF USERS*/}
+      {/* PAGINAÇÃO DOS USUÁRIOS */}
       <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-center">
         <div className="flex items-center gap-1">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            onClick={() => {
+              setCurrentPage((prev) => Math.max(1, prev - 1));
+              setSelectedRows([]);
+            }}
             disabled={currentPage === 1}
             className={`p-1 rounded ${
               currentPage === 1
@@ -233,11 +236,13 @@ function Table({
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             totalPages={data.totalPages}
+            setSelectedRows={setSelectedRows}
           />
           <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(data.totalPages, prev + 1))
-            }
+            onClick={() => {
+              setCurrentPage((prev) => Math.min(data.totalPages, prev + 1));
+              setSelectedRows([]);
+            }}
             disabled={currentPage === data.totalPages}
             className={`p-1 rounded ${
               currentPage === data.totalPages

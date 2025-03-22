@@ -25,25 +25,17 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-10">
-      {/* FILTERS OF USERS  */}
+      {/* FILTRO PARA TABELA  */}
       <Filter />
 
-      {/* TABLE OF USERS */}
+      {/* TABELA DE APOIADORES*/}
       <Table
         selectedRows={selectedRows}
         setSelectedRows={setSelectedRows}
         handleEdit={handleEdit}
       />
 
-      {/* MODAL CONFIRMATION DELETE USER */}
-      {showDeleteModal && (
-        <DeleteUser
-          closeModal={() => setShowDeleteModal(false)}
-          selectedRows={selectedRows}
-        />
-      )}
-
-      {/* MODAL EDIT USER */}
+      {/* MODAL EDITAR APOIADOR */}
       {showEditModal && editingSupporter && (
         <EditUser
           closeModal={() => setShowEditModal(false)}
@@ -52,21 +44,29 @@ function Home() {
         />
       )}
 
-      {/* MODAL COUNT USERS FOR DELETE */}
+      {/* MODAL PARA CONTAGEM DE APOIADORES */}
       {selectedRows.length > 0 && !showDeleteModal && !showEditModal && (
         <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 flex items-center gap-4">
           <span className="text-sm text-gray-600">
-            {selectedRows.length} {selectedRows.length === 1 ? "user" : "users"}{" "}
-            selected
+            {selectedRows.length}{" "}
+            {selectedRows.length === 1 ? "apoiador" : "apoiadores"} selecionado
           </span>
           <button
             onClick={() => setShowDeleteModal(true)}
             className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md flex items-center gap-2"
           >
             <img src={trash} alt="Trash" className="w-4 h-4 text-white" />
-            Delete
+            Remover
           </button>
         </div>
+      )}
+
+      {/* MODAL CONFIRMAR DELEÇÃO DOS APOIADORES */}
+      {showDeleteModal && (
+        <DeleteUser
+          closeModal={() => setShowDeleteModal(false)}
+          selectedRows={selectedRows}
+        />
       )}
     </div>
   );

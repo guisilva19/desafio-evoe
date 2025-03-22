@@ -4,10 +4,12 @@ function Pagination({
   currentPage,
   setCurrentPage,
   totalPages,
+  setSelectedRows,
 }: {
   currentPage: number;
-  setCurrentPage: Dispatch<SetStateAction<number>>;
   totalPages: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  setSelectedRows: Dispatch<SetStateAction<string[]>>;
 }) {
   const pages = [];
   const maxVisiblePages = 5;
@@ -22,7 +24,10 @@ function Pagination({
     pages.push(
       <button
         key={i}
-        onClick={() => setCurrentPage(i)}
+        onClick={() => {
+          setCurrentPage(i);
+          setSelectedRows([])
+        }}
         className={`px-3 py-1 mx-0.5 rounded ${
           currentPage === i
             ? "bg-gray-200 text-gray-700"
