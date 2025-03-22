@@ -16,7 +16,6 @@ function App() {
             <Route path="/" index element={<SignIn />} />
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />
-              <Route path="/dashboard" element={<h1>Área Protegida</h1>} />
             </Route>
           </Routes>
         </Router>
