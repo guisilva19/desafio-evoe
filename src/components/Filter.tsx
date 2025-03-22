@@ -42,7 +42,7 @@ function Filter() {
                 </button>
               </div>
             </div>
-            <button className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex items-center gap-2">
+            <button className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex items-center gap-2 cursor-pointer">
               <img src={calendar} alt="Calendar" className="w-4 h-4" />
             </button>
             <button

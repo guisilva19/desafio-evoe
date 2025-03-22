@@ -1,20 +1,20 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { useCookies } from "react-cookie";
+import { ResponseData, User } from "../interfaces";
 import axios from "axios";
 import toast from "react-hot-toast";
-
-interface User {
-  nome: string;
-  email: string;
-  link: string;
-  telefone: string;
-}
 
 interface AuthContextType {
   user: User | null;
   access_token: string;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  getSupporters: (
+    page: number,
+    nome?: string,
+    email?: string,
+    telefone?: string
+  ) => Promise<ResponseData>;
 }
 
 export const AuthContext = createContext<AuthContextType>(
@@ -77,9 +77,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const getSupporters = async (
+    page: number,
+    nome: string = "",
+    email: string = "",
+    telefone: string = ""
+  ) => {
+    const response = await axios.get(
+      `${apiUrl}/supporters?page=${page}&nome=${nome}&email=${email}&telefone=${telefone}`,
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.access_token}`,
+        },
+      }
+    );
+
+    return response.data;
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, access_token: cookies.access_token }}
+      value={{
+        user,
+        login,
+        logout,
+        getSupporters,
+        access_token: cookies.access_token,
+      }}
     >
       {children}
     </AuthContext.Provider>

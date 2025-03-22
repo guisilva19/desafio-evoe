@@ -1,96 +1,53 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
-import { Column, User } from "../interfaces";
+import { Column, ResponseData, Supporter } from "../interfaces";
 
 import pencil from "../assets/svg/pencil.svg";
 import link from "../assets/svg/link.svg";
-
-const ITEMS_PER_PAGE = 10;
-
-const generateMockData = (count: number): User[] => {
-  const data: User[] = [];
-  const names = ["Guilherme Silva", "Ane Caroline"];
-  const values = [
-    "2003silvagui@gmail.com",
-    "2003silvagui@gmail.com",
-    "2003silvagui@gmail.com",
-  ];
-  const telefones = ["77999577372", "77999577372", "77999577372"];
-
-  for (let i = 1; i <= count; i++) {
-    const date = new Date(2023, 0, 1);
-    date.setDate(date.getDate() - i);
-
-    data.push({
-      id: i,
-      name: names[i % names.length],
-      email: values[i % values.length],
-      telephone: telefones[i % telefones.length],
-      link: "https://www.linkedin.com/in/guilhermesilvafernandes/",
-    });
-  }
-
-  return data;
-};
+import { AuthContext } from "../context/AuthContext";
 
 function Table({
   selectedRows,
   setSelectedRows,
   handleEdit,
 }: {
-  selectedRows: number[];
-  setSelectedRows: Dispatch<SetStateAction<number[]>>;
-  handleEdit: (user: User) => void;
+  selectedRows: string[];
+  setSelectedRows: Dispatch<SetStateAction<string[]>>;
+  handleEdit: (supporter: Supporter) => void;
 }) {
+  const [data, setData] = useState<ResponseData>({} as ResponseData);
+
+  const { getSupporters } = useContext(AuthContext);
+
   const [showExportDropdown, setShowExportDropdown] = useState(false);
   const [showColumnsDropdown, setShowColumnsDropdown] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const mockData = generateMockData(25);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, mockData.length);
-  const currentData = mockData.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(mockData.length / ITEMS_PER_PAGE);
+  useEffect(() => {
+    get();
+  }, [currentPage]);
 
-  const renderPageNumbers = () => {
-    const pages = [];
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(
-        <button
-          key={i}
-          onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${
-            currentPage === i
-              ? "bg-gray-200 text-gray-700"
-              : "hover:bg-gray-100 text-gray-600"
-          }`}
-        >
-          {i}
-        </button>
-      );
-    }
-
-    return pages;
+  const get = async () => {
+    const response = await getSupporters(currentPage);
+    setData(response);
   };
 
   const toggleSelectAll = () => {
-    if (selectedRows.length === currentData.length) {
+    if (selectedRows.length === data.supporters.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(currentData.map((item) => item.id));
+      setSelectedRows(data.supporters.map((item) => item.id));
     }
   };
 
-  const toggleSelectRow = (id: number) => {
+  const toggleSelectRow = (id: string) => {
     if (selectedRows.includes(id)) {
       setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
     } else {
@@ -98,7 +55,7 @@ function Table({
     }
   };
 
-  const toggleColumn = (key: keyof User) => {
+  const toggleColumn = (key: keyof Supporter) => {
     setColumns(
       columns.map((col) =>
         col.key === key ? { ...col, visible: !col.visible } : col
@@ -107,9 +64,9 @@ function Table({
   };
 
   const [columns, setColumns] = useState<Column[]>([
-    { key: "name", label: "Name", visible: true },
+    { key: "nome", label: "Nome", visible: true },
     { key: "email", label: "Email", visible: true },
-    { key: "telephone", label: "Telephone", visible: true },
+    { key: "telefone", label: "Telefone", visible: true },
     { key: "link", label: "Link", visible: true },
   ]);
 
@@ -181,7 +138,7 @@ function Table({
                 <th className="px-4 py-2 text-left">
                   <input
                     type="checkbox"
-                    checked={selectedRows.length === currentData.length}
+                    checked={selectedRows.length === data.supporters?.length}
                     onChange={toggleSelectAll}
                     className="rounded border-gray-300"
                   />
@@ -202,7 +159,7 @@ function Table({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {currentData.map((item) => (
+              {data.supporters?.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-4 py-2">
                     <input
@@ -271,14 +228,18 @@ function Table({
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          {renderPageNumbers()}
+          <RenderPageNumbers
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={data.totalPages}
+          />
           <button
             onClick={() =>
-              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+              setCurrentPage((prev) => Math.min(data.totalPages, prev + 1))
             }
-            disabled={currentPage === totalPages}
+            disabled={currentPage === data.totalPages}
             className={`p-1 rounded ${
-              currentPage === totalPages
+              currentPage === data.totalPages
                 ? "text-gray-300"
                 : "hover:bg-gray-100 text-gray-500"
             }`}
@@ -290,4 +251,42 @@ function Table({
     </>
   );
 }
+
+const RenderPageNumbers = ({
+  currentPage,
+  setCurrentPage,
+  totalPages,
+}: {
+  currentPage: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  totalPages: number;
+}) => {
+  const pages = [];
+  const maxVisiblePages = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+  const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+  if (endPage - startPage + 1 < maxVisiblePages) {
+    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(
+      <button
+        key={i}
+        onClick={() => setCurrentPage(i)}
+        className={`px-3 py-1 mx-0.5 rounded ${
+          currentPage === i
+            ? "bg-gray-200 text-gray-700"
+            : "hover:bg-gray-100 text-gray-600"
+        }`}
+      >
+        {i}
+      </button>
+    );
+  }
+
+  return pages;
+};
+
 export default Table;

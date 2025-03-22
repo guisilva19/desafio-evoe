@@ -2,8 +2,6 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  telephone: string;
-  link: string;
 }
 
 export interface FilterOption {
@@ -12,7 +10,25 @@ export interface FilterOption {
 }
 
 export interface Column {
-  key: keyof User;
+  key: keyof Supporter;
   label: string;
   visible: boolean;
+}
+
+export interface Supporter {
+  id: string;
+  nome: string;
+  email: string;
+  link: string;
+  telefone: string;
+  criado_em: string;
+  atualizado_em: string;
+}
+
+export interface ResponseData {
+  supporters: Supporter[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
 }

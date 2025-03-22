@@ -10,7 +10,7 @@ import Table from "../../components/Table";
 import Filter from "../../components/Filter";
 
 function Home() {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);

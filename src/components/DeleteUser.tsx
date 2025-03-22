@@ -4,7 +4,7 @@ function DeleteUser({
   selectedRows,
   closeModal,
 }: {
-  selectedRows: number[];
+  selectedRows: string[];
   closeModal: () => void;
 }) {
   const handleDelete = () => {};
